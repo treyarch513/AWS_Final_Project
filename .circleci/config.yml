@@ -13,9 +13,9 @@ jobs:
       - run:
           name: Install Harbor SSL Certificate from Git
           command: |
-            mkdir -p /usr/local/share/ca-certificates/extra
-            cp ./certificates/ca.crt /usr/local/share/ca-certificates/extra/harbor.crt
-            update-ca-certificates
+            sudo mkdir -p /usr/local/share/ca-certificates/extra
+            sudo cp ./certificates/ca.crt /usr/local/share/ca-certificates/extra/harbor.crt
+            sudo update-ca-certificates
 
       # 백엔드 각 서비스의 .env 파일을 생성 (포트 번호만 다르게 설정)
       - run:
