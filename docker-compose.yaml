@@ -1,10 +1,8 @@
-#back docker  compose
-
 version: '3.8'
 
 networks:
   mynetwork:
-    external: true
+    driver: bridge  # 네트워크 드라이버 설정 (bridge는 기본값)
 
 services:
   auth-service:
@@ -81,6 +79,7 @@ services:
       - mynetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
   app:
     build:
       context: ./Frontend/bravo-front
@@ -95,5 +94,4 @@ services:
       - mynetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
 
