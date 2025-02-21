@@ -1,0 +1,78 @@
+#back docker  compose
+
+version: '3.8'
+
+networks:
+  mynetwork: # ✅ 모든 서비스가 같은 네트워크를 사용하도록 설정
+    external: true # ✅ 외부 네트워크 사용
+
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    env_file:
+      - ./auth-service/.env
+    ports:
+      - "3001:3001"
+    networks:
+      - mynetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  search-service:
+    build:
+      context: ./search-service
+      dockerfile: Dockerfile
+    container_name: search-service
+    env_file:
+      - ./search-service/.env
+    ports:
+      - "3002:3002"
+    networks:
+      - mynetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  lyrics-service:
+    build:
+      context: ./lyrics-service
+      dockerfile: Dockerfile
+    container_name: lyrics-service
+    env_file:
+      - ./lyrics-service/.env
+    ports:
+      - "3003:3003"
+    networks:
+      - mynetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  translation-service:
+    build:
+      context: ./translation-service
+      dockerfile: Dockerfile
+    container_name: translation-service
+    env_file:
+      - ./translation-service/.env
+    ports:
+      - "3004:3004"
+    networks:
+      - mynetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  playlist-service:
+    build:
+      context: ./playlist-service
+      dockerfile: Dockerfile
+    container_name: playlist-service
+    env_file:
+      - ./playlist-service/.env
+    ports:
+      - "3005:3005"
+    networks:
+      - mynetwork
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
