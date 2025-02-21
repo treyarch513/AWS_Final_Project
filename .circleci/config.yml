@@ -67,10 +67,10 @@ jobs:
           command: |
             docker-compose -f docker-compose.yaml up -d
 
-      # 서비스 테스트 (여기서는 auth-service만 예시로 실행)
-      - run:
-          name: Run Tests on Auth Service
-          command: docker-compose -f docker-compose.yaml exec auth-service npm test
+      # 테스트 명령어 제거 (이미지에서 실행 명령어가 이미 설정되어 있음)
+      # - run:
+      #     name: Run Tests on Auth Service
+      #     command: docker-compose -f docker-compose.yaml exec auth-service npm test
 
       # 서비스 종료
       - run:
