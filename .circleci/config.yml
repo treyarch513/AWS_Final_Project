@@ -61,16 +61,32 @@ jobs:
           name: Build Docker Images
           command: docker-compose -f docker-compose.yaml build
 
+      # Docker 이미지 태깅
+      - run:
+          name: Tag Docker Images for Harbor
+          command: |
+            docker tag itda-auth:1.0 $HARBOR_URL/$HARBOR_PROJECT/itda-auth:1.0
+            docker tag itda-search:1.0 $HARBOR_URL/$HARBOR_PROJECT/itda-search:1.0
+            docker tag itda-lyrics:1.0 $HARBOR_URL/$HARBOR_PROJECT/itda-lyrics:1.0
+
+      # Harbor에 로그인
+      - run:
+          name: Log in to Harbor
+          command: echo "$HARBOR_PASSWORD" | docker login $HARBOR_URL --username "$HARBOR_USERNAME" --password-stdin
+
+      # Harbor로 Docker 이미지 푸시
+      - run:
+          name: Push Docker Images to Harbor
+          command: |
+            docker push $HARBOR_URL/$HARBOR_PROJECT/itda-auth:1.0
+            docker push $HARBOR_URL/$HARBOR_PROJECT/itda-search:1.0
+            docker push $HARBOR_URL/$HARBOR_PROJECT/itda-lyrics:1.0
+
       # 프론트엔드와 백엔드 서비스 실행
       - run:
           name: Start Services
           command: |
             docker-compose -f docker-compose.yaml up -d
-
-      # 테스트 명령어 제거 (이미지에서 실행 명령어가 이미 설정되어 있음)
-      # - run:
-      #     name: Run Tests on Auth Service
-      #     command: docker-compose -f docker-compose.yaml exec auth-service npm test
 
       # 서비스 종료
       - run:
