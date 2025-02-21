@@ -32,33 +32,29 @@ jobs:
                   ;;
               esac
               echo "Creating .env for $service on port $port"
-              cat <<EOF > Backend/Image/$service/.env
-PORT="${port}"
-SPOTIFY_CLIENT_ID="${SPOTIFY_CLIENT_ID}"
-SPOTIFY_CLIENT_SECRET="${SPOTIFY_CLIENT_SECRET}"
-YOUTUBE_API_KEYS="${YOUTUBE_API_KEYS}"
-GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID}"
-FRONTEND_URL="${FRONTEND_URL}"
-GOOGLE_CLIENT_SECRET="${GOOGLE_CLIENT_SECRET}"
-JWT_SECRET="${JWT_SECRET}"
-MONGO_URI="${MONGO_URI}"
-MUSIXMATCH_API_KEY="${MUSIXMATCH_API_KEY}"
-MUSIXMATCH_API_HOST="${MUSIXMATCH_API_HOST}"
-AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
-AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
-AWS_REGION="${AWS_REGION}"
-INFERENCE_PROFILE_ARN="${INFERENCE_PROFILE_ARN}"
-LRCLIB_API_BASE="${LRCLIB_API_BASE}"
-EOF
+              echo "PORT=\"$port\"" > Backend/Image/$service/.env
+              echo "SPOTIFY_CLIENT_ID=\"$SPOTIFY_CLIENT_ID\"" >> Backend/Image/$service/.env
+              echo "SPOTIFY_CLIENT_SECRET=\"$SPOTIFY_CLIENT_SECRET\"" >> Backend/Image/$service/.env
+              echo "YOUTUBE_API_KEYS=\"$YOUTUBE_API_KEYS\"" >> Backend/Image/$service/.env
+              echo "GOOGLE_CLIENT_ID=\"$GOOGLE_CLIENT_ID\"" >> Backend/Image/$service/.env
+              echo "FRONTEND_URL=\"$FRONTEND_URL\"" >> Backend/Image/$service/.env
+              echo "GOOGLE_CLIENT_SECRET=\"$GOOGLE_CLIENT_SECRET\"" >> Backend/Image/$service/.env
+              echo "JWT_SECRET=\"$JWT_SECRET\"" >> Backend/Image/$service/.env
+              echo "MONGO_URI=\"$MONGO_URI\"" >> Backend/Image/$service/.env
+              echo "MUSIXMATCH_API_KEY=\"$MUSIXMATCH_API_KEY\"" >> Backend/Image/$service/.env
+              echo "MUSIXMATCH_API_HOST=\"$MUSIXMATCH_API_HOST\"" >> Backend/Image/$service/.env
+              echo "AWS_ACCESS_KEY_ID=\"$AWS_ACCESS_KEY_ID\"" >> Backend/Image/$service/.env
+              echo "AWS_SECRET_ACCESS_KEY=\"$AWS_SECRET_ACCESS_KEY\"" >> Backend/Image/$service/.env
+              echo "AWS_REGION=\"$AWS_REGION\"" >> Backend/Image/$service/.env
+              echo "INFERENCE_PROFILE_ARN=\"$INFERENCE_PROFILE_ARN\"" >> Backend/Image/$service/.env
+              echo "LRCLIB_API_BASE=\"$LRCLIB_API_BASE\"" >> Backend/Image/$service/.env
             done
 
       # 프론트엔드 .env 파일 생성 (필요한 내용만 설정)
       - run:
           name: Create Frontend .env file
           command: |
-            cat <<EOF > Frontend/bravo-front/.env
-VITE_BACKEND_URL="${VITE_BACKEND_URL}"
-EOF
+            echo "VITE_BACKEND_URL=\"$VITE_BACKEND_URL\"" > Frontend/bravo-front/.env
 
       # Docker Compose로 이미지 빌드 및 테스트 실행
       - run:
