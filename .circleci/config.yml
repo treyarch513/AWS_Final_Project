@@ -9,6 +9,14 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
 
+      # Harbor 인증서 설치 (자체 서명된 인증서가 있는 경우)
+      - run:
+          name: Install Harbor SSL Certificate
+          command: |
+            mkdir -p /usr/local/share/ca-certificates/extra
+            echo "$HARBOR_CA_CERTIFICATE" > /usr/local/share/ca-certificates/extra/harbor.crt
+            update-ca-certificates
+
       # 백엔드 각 서비스의 .env 파일을 생성 (포트 번호만 다르게 설정)
       - run:
           name: Create Backend .env files for services
