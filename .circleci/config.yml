@@ -61,14 +61,6 @@ jobs:
           name: Build Docker Images
           command: docker-compose -f docker-compose.yaml build
 
-      - run:
-          name: Install Harbor SSL Certificate
-          command: |
-            # 인증서 파일을 다운로드하거나 CircleCI 환경에 업로드된 인증서 파일을 사용
-            sudo mkdir -p /usr/local/share/ca-certificates/extra
-            sudo cp ./path/to/your/ca.crt /usr/local/share/ca-certificates/extra/harbor.crt
-            sudo update-ca-certificates
-
       # Docker 이미지 태깅
       - run:
           name: Tag Docker Images for Harbor
