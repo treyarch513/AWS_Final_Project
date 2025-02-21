@@ -3,11 +3,64 @@ version: 2.1
 jobs:
   build_and_test:
     docker:
-      - image: cimg/base:stable  # 또는 :latest, :<버전> 등 사용 가능
+      - image: cimg/base:stable  # 기본 Linux 환경 이미지
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+
+      # 백엔드 각 서비스의 .env 파일 생성 (포트 번호만 다르게 설정)
+      - run:
+          name: Create Backend .env files for services
+          command: |
+            for service in auth-service search-service lyrics-service translation-service playlist-service; do
+              case "$service" in
+                auth-service)
+                  port=3001
+                  ;;
+                search-service)
+                  port=3002
+                  ;;
+                lyrics-service)
+                  port=3003
+                  ;;
+                translation-service)
+                  port=3004
+                  ;;
+                playlist-service)
+                  port=3005
+                  ;;
+              esac
+              echo "Creating .env for $service on port $port"
+              cat <<EOF > Backend/Image/$service/.env
+PORT=$port
+SPOTIFY_CLIENT_ID=$SPOTIFY_CLIENT_ID
+SPOTIFY_CLIENT_SECRET=$SPOTIFY_CLIENT_SECRET
+YOUTUBE_API_KEYS=$YOUTUBE_API_KEYS
+GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+FRONTEND_URL=$FRONTEND_URL
+GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+JWT_SECRET=$JWT_SECRET
+MONGO_URI=$MONGO_URI
+MUSIXMATCH_API_KEY=$MUSIXMATCH_API_KEY
+MUSIXMATCH_API_HOST=$MUSIXMATCH_API_HOST
+AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+AWS_REGION=$AWS_REGION
+INFERENCE_PROFILE_ARN=$INFERENCE_PROFILE_ARN
+LRCLIB_API_BASE=$LRCLIB_API_BASE
+EOF
+            done
+
+      # 프론트엔드 .env 파일 생성 (필요한 내용만 설정)
+      - run:
+          name: Create Frontend .env file
+          command: |
+            cat <<EOF > Frontend/bravo-front/.env
+VITE_BACKEND_URL=$VITE_BACKEND_URL
+EOF
+
+      # Docker Compose로 이미지 빌드 및 테스트 실행
       - run:
           name: Build Docker Images
           command: docker-compose -f docker-compose.yaml build
@@ -15,7 +68,7 @@ jobs:
           name: Start Services
           command: docker-compose -f docker-compose.yaml up -d
       - run:
-          name: Run Tests
+          name: Run Tests on Auth Service
           command: docker-compose -f docker-compose.yaml exec auth-service npm test
       - run:
           name: Stop Services

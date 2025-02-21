@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[remote "origin"]
+	url = https://github.com/treyarch513/AWS_Final_Project.git
+	fetch = +refs/*:refs/*
+	mirror = true
