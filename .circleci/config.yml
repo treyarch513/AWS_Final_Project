@@ -56,16 +56,33 @@ jobs:
           command: |
             echo "VITE_BACKEND_URL=${VITE_BACKEND_URL}" > Frontend/bravo-front/.env
 
-      # Docker Compose로 이미지 빌드 및 테스트 실행
+      # Docker Compose로 이미지 빌드
       - run:
           name: Build Docker Images
           command: docker-compose -f docker-compose.yaml build
+
+      # 프론트엔드 실행 (npm run dev --host)
       - run:
-          name: Start Services
-          command: docker-compose -f docker-compose.yaml up -d
+          name: Start Frontend
+          command: |
+            docker-compose -f docker-compose.yaml exec app npm run dev --host
+
+      # 백엔드 실행 (node server.js)
+      - run:
+          name: Start Backend Services
+          command: |
+            docker-compose -f docker-compose.yaml exec auth-service node server.js &
+            docker-compose -f docker-compose.yaml exec search-service node server.js &
+            docker-compose -f docker-compose.yaml exec lyrics-service node server.js &
+            docker-compose -f docker-compose.yaml exec translation-service node server.js &
+            docker-compose -f docker-compose.yaml exec playlist-service node server.js &
+
+      # 서비스 테스트 (여기서는 auth-service만 예시로 실행)
       - run:
           name: Run Tests on Auth Service
           command: docker-compose -f docker-compose.yaml exec auth-service npm test
+
+      # 서비스 종료
       - run:
           name: Stop Services
           command: docker-compose -f docker-compose.yaml down
