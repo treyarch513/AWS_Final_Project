@@ -5,16 +5,16 @@ jobs:
     docker:
       - image: cimg/base:stable  # 기본 Linux 환경 이미지
     steps:
-      - checkout
+      - checkout  # Git 저장소에서 코드 가져오기
       - setup_remote_docker:
           docker_layer_caching: true
 
-      # Harbor 인증서 설치 (자체 서명된 인증서가 있는 경우)
+      # Git에서 인증서 파일 가져오기 (certificates/ca.crt)
       - run:
-          name: Install Harbor SSL Certificate
+          name: Install Harbor SSL Certificate from Git
           command: |
             mkdir -p /usr/local/share/ca-certificates/extra
-            echo "$HARBOR_CA_CERTIFICATE" > /usr/local/share/ca-certificates/extra/harbor.crt
+            cp ./certificates/ca.crt /usr/local/share/ca-certificates/extra/harbor.crt
             update-ca-certificates
 
       # 백엔드 각 서비스의 .env 파일을 생성 (포트 번호만 다르게 설정)
